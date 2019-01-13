@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { ProgressBar } from './progressBar';
 import { Message } from './message';
 
+import { fb } from './firebase.service';
+
 import logo from './logo.svg';
 import './App.css';
 
@@ -15,6 +17,14 @@ class App extends Component {
         {
           header: 'todo number 1',
           descr: 'description...',
+          done: false,
+          attachments: [
+            { name: 'attached file 1', url: 'url/to/the/file.txt' }
+          ]
+        },
+        {
+          header: 'todo number 2',
+          descr: 'descriptionuiuh...',
           done: false,
           attachments: [
             { name: 'attached file 1', url: 'url/to/the/file.txt' }
@@ -34,9 +44,17 @@ class App extends Component {
 
   deleteAttachment() {}
 
-  login() {}
+  login = () => {
+    fb.signIn(({ user }) => {
+      this.setState({ user });
+    });
+  }
 
-  logout() {}
+  logout = () => {
+    fb.signOut(() => {
+      this.setState({ user: null });
+    });
+  }
 
   render() {
     const { user } = this.state;
