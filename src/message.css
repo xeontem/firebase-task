@@ -1,0 +1,39 @@
+.message__wrapper {
+  display: flex;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  height: 100px;
+  background-color: white;
+  z-index: 1000;
+  border: 2px solid;
+  animation: ShowHide infinite 4s cubic-bezier(0.59, 0.08, 0, 0.97);
+}
+
+.message__wrapper h3 {
+  margin: 0;
+}
+
+.message__wrapper div {
+  padding: 5px;
+}
+
+
+@keyframes ShowHide {
+  0% {
+    transform: translateX(340px);
+  }
+
+  20% {
+    transform: translateX(0px);
+  }
+
+  80% {
+    transform: translateX(0px);
+  }
+
+  100% {
+    transform: translateX(340px);
+  }
+}

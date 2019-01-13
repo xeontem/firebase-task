@@ -1,0 +1,116 @@
+a {
+  color: black;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  display: flex;
+  background-color: #222;
+  justify-content: space-around;
+  padding: 20px;
+  color: white;
+}
+
+.login__wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.login__wrapper img {
+  width: 100px;
+  height: 100px;
+}
+
+.login__wrapper button {
+  cursor: pointer;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.todo__wrapper {
+  position: relative;
+  border: 2px solid black;
+  width: 80vw;
+  margin: 20px auto;
+  text-align: left;
+  padding: 20px;
+}
+
+.todo__wrapper h2 {
+  margin: 0;
+  border-bottom: 1px solid black;
+}
+
+.back-up {
+  height: 40px;
+  width: 160px;
+  margin: 20px;
+  border-radius: 10px;
+  border: 2px solid black;
+  cursor: pointer;
+}
+
+.todo__wrapper .todo__done-button {
+  height: 40px;
+  width: 160px;
+  border-radius: 10px;
+  border: 2px solid black;
+  margin-left: calc(100% - 160px);
+  cursor: pointer;
+}
+
+.todo__wrapper--done:after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -29px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid black;
+  background: black;
+}
+
+.todo__wrapper--not-done:after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -29px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid black;
+}
+
+.todo__attachments {
+  display: flex;
+}
+
+.todo__attachments div {
+  margin-right: 5px;
+  padding: 5px;
+  border: 1px solid black;
+}
+
+.todo__attachments div a {
+  margin-right: 5px;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

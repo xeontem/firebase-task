@@ -1,0 +1,19 @@
+.progress__wrapper {
+  position: relative;
+  height: 20px;
+  width: 50%;
+  margin: 5px 0px;
+  border: 2px solid black;
+}
+
+.progress__wrapper--done:after {
+  content: 'DONE';
+  position: absolute;
+  right: -50px;
+  top: 0px;
+}
+
+.progress__progress-bar {
+  height: 100%;
+  background: black;
+}
