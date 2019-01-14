@@ -22,7 +22,6 @@ export const fb = {
     // The signed-in user info.
     // const user = result.user;
     onSucc(result);
-    // ...
   }).catch(error => {
     console.log(error);
     // Handle Errors here.
