@@ -18,20 +18,20 @@ provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 export const fb = {
   signIn: (onSucc, onFail) => firebase.auth().signInWithPopup(provider).then(result => {
     // This gives you a Google Access Token. You can use it to access the Google API.
-    const token = result.credential.accessToken;
+    // const token = result.credential.accessToken;
     // The signed-in user info.
-    const user = result.user;
+    // const user = result.user;
     onSucc(result);
     // ...
   }).catch(error => {
     console.log(error);
     // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
+    // const errorCode = error.code;
+    // const errorMessage = error.message;
     // The email of the user's account used.
-    const email = error.email;
+    // const email = error.email;
     // The firebase.auth.AuthCredential type that was used.
-    const credential = error.credential;
+    // const credential = error.credential;
 
     onFail(error);
   }),
