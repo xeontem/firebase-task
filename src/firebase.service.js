@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/firestore';
 
 const config = {
   apiKey: "AIzaSyCNWCIvwa3ko3YozWO-9Z-U8yhKH60HFt4",
@@ -14,6 +15,9 @@ firebase.initializeApp(config);
 // authentication
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+
+//firestore
+const db = firebase.firestore();
 
 export const fb = {
   signIn: (onSucc, onFail) => firebase.auth().signInWithPopup(provider).then(result => {
@@ -41,4 +45,6 @@ export const fb = {
     // An error happened.
     onFail();
   }),
+  getTodos: cb => db.collection('todos').onSnapshot(cb),
+  toggleDone: ({ id, done }) => db.collection('todos').doc(id).update({ done: !done })
 };
