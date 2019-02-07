@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/firestore';
 
 const config = {
   apiKey: "AIzaSyCNWCIvwa3ko3YozWO-9Z-U8yhKH60HFt4",
@@ -15,6 +16,9 @@ firebase.initializeApp(config);
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 
+//firestore
+const db = firebase.firestore();
+
 export const fb = {
   signIn: (onSucc, onFail) => firebase.auth().signInWithPopup(provider).then(result => {
     // This gives you a Google Access Token. You can use it to access the Google API.
@@ -22,7 +26,6 @@ export const fb = {
     // The signed-in user info.
     // const user = result.user;
     onSucc(result);
-    // ...
   }).catch(error => {
     console.log(error);
     // Handle Errors here.
@@ -42,4 +45,6 @@ export const fb = {
     // An error happened.
     onFail();
   }),
+  getTodos: cb => db.collection('todos').onSnapshot(cb),
+  toggleDone: ({ id, done }) => db.collection('todos').doc(id).update({ done: !done })
 };
