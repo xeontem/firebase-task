@@ -3,6 +3,10 @@
 # dependencies
 /node_modules
 /functions/node_modules
+<<<<<<< HEAD
+=======
+/build
+>>>>>>> feat: deploy ci job. Firebase project init.
 /.pnp
 .pnp.js
 
