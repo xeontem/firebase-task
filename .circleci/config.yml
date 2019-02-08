@@ -99,7 +99,7 @@ workflows:
           requires:
             - save_cache
       - deploy:
-          context: firebase-react
+          context: firebase-task
           requires:
             - build
             - test
