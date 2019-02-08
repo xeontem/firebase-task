@@ -1,0 +1,108 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+
+setImage: &setImage
+  docker:
+    - image: circleci/node:10-browsers
+  working_directory: ~/repo
+
+
+
+version: 2
+jobs:
+  # Download and cache dependencies
+  save_cache:
+    <<: *setImage
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: install-dependencies
+          command: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+  test:
+    <<: *setImage
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: run-unit-tests
+          command: yarn test
+
+  build:
+    <<: *setImage
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run:
+          name: build-artifact
+          command: yarn build
+      - store_artifacts:
+          path: ./build/
+      - persist_to_workspace:
+          root: ~/repo
+          paths: build
+
+  deploy:
+    <<: *setImage
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - attach_workspace:
+          at: ~/repo
+      - store_artifacts:
+          path: ./build/
+      - run: # test what token.
+          name: "What token?"
+          command: echo $FIREBASE_TOKEN
+      - run:
+          name: Deploy to Firebase hosting
+          command: ./node_modules/.bin/firebase deploy --token $FIREBASE_TOKEN
+
+workflows:
+  version: 2
+  test-and-build-flow:
+    jobs:
+      - save_cache
+      - test:
+          requires:
+            - save_cache
+      - build:
+          requires:
+            - save_cache
+      - deploy:
+          context: firebase-react
+          requires:
+            - build
+            - test
+          filters:
+                branches:
+                  only: master
