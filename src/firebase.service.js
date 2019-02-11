@@ -14,5 +14,8 @@ const provider = new firebase.auth.GoogleAuthProvider();
 provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 
 export const fb = {
-  login: () => fire.auth().signInWithPopup(provider)
+  login: () => fire.auth().signInWithPopup(provider),
+  getTodos: cb => firebase.firestore().collection('todos').onSnapshot(cb),
+  toggleTodo: ({ id, done}) => firebase.firestore().collection('todos')
+    .doc(id).update({ done: !done })
 };

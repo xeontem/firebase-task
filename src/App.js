@@ -12,24 +12,22 @@ class App extends Component {
     super(props);
     this.state = {
       user: null,
-      todos: [
-        {
-          header: 'todo number 1',
-          descr: 'description...',
-          done: false,
-          attachments: [
-            { name: 'attached file 1', url: 'url/to/the/file.txt' }
-          ]
-        }
-      ]
+      todos: []
     };
+    fb.getTodos(snap => {
+        this.setState({
+          todos: [...snap.docs].map(doc => ({ id: doc.id, ...doc.data() }))
+        });
+      });
   }
 
   backupTodos() {}
 
   getMessage() {}
 
-  toggleDone() {}
+  toggleDone = todo => () => {
+    fb.toggleTodo(todo);
+  }
 
   uploadAttachment() {}
 
@@ -80,7 +78,7 @@ class App extends Component {
                     )}
                   </div> : null
                 }
-                <button className="todo__done-button" onClick={this.toggleDone(i)}>Toggle Done</button>
+                <button className="todo__done-button" onClick={this.toggleDone(todo)}>Toggle Done</button>
               </article>
             ))}
           </main>
