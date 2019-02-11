@@ -26,7 +26,7 @@ class App extends Component {
   getMessage() {}
 
   toggleDone = todo => () => {
-    fb.toggleTodo(todo);
+    fb.toggleTodo(todo).catch(e => e);
   }
 
   uploadAttachment() {}
@@ -39,7 +39,11 @@ class App extends Component {
     });
   }
 
-  logout() {}
+  logout = () => {
+    fb.logout().then(() => {
+      this.setState({ user: null });
+    });
+  }
 
   render() {
     const { user } = this.state;
