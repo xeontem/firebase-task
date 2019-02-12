@@ -13,10 +13,15 @@ const fire = firebase.initializeApp(config);
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 
+const auth = fire.auth();
+const func = firebase.functions();
+
 export const fb = {
-  login: () => fire.auth().signInWithPopup(provider),
-  logout: () => fire.auth().signOut(),
+  login: () => auth.signInWithPopup(provider),
+  logout: () => auth.signOut(),
   getTodos: cb => firebase.firestore().collection('todos').onSnapshot(cb),
   toggleTodo: ({ id, done}) => firebase.firestore().collection('todos')
-    .doc(id).update({ done: !done })
+    .doc(id).update({ done: !done }),
+  backupTodos: () => func.httpsCallable('backupTodos')(),
+  auth,
 };
