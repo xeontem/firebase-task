@@ -4,7 +4,10 @@ import App from './App';
 
 // fb sevice mock
 jest.mock('./firebase.service', () => ({
-  fb: { getTodos: () => {} },
+  fb: {
+    getTodos: () => {},
+    auth: { onAuthStateChanged: () => {} }
+  },
 }));
 
 it('renders without crashing', () => {

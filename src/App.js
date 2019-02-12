@@ -14,14 +14,26 @@ class App extends Component {
       user: null,
       todos: []
     };
+
+    // show authorized user onload
+    fb.auth.onAuthStateChanged(user =>
+      this.setState({ user: user
+        ? { displayName: user.displayName, photoURL: user.photoURL }
+        : null
+      }));
+
     fb.getTodos(snap => {
-        this.setState({
-          todos: [...snap.docs].map(doc => ({ id: doc.id, ...doc.data() }))
-        });
+      this.setState({
+        todos: [...snap.docs].map(doc => ({ id: doc.id, ...doc.data() }))
       });
+    });
   }
 
-  backupTodos() {}
+  backupTodos() {
+    fb.backupTodos().then(res => {
+      console.log(res);
+    });
+  }
 
   getMessage() {}
 
