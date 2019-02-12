@@ -6,7 +6,8 @@ import App from './App';
 jest.mock('./firebase.service', () => ({
   fb: {
     getTodos: () => {},
-    auth: { onAuthStateChanged: () => {} }
+    auth: { onAuthStateChanged: () => {} },
+    messaging: {  onMessage: () => {} }
   },
 }));
 

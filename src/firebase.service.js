@@ -16,6 +16,17 @@ provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 const auth = fire.auth();
 const func = firebase.functions();
 
+// messaging
+const messaging = firebase.messaging();
+messaging.usePublicVapidKey("BGsoQQo2r3rVMERHG2xS7P7-0Mermus_AMQrTdiZyxbl2gJR2-YehuU0e_9VMw9EL9tPIjuPx1ZCSd_SvPy2MuE");
+messaging.requestPermission().then(() => {
+  return messaging.getToken();
+}).then(token => {
+  func.httpsCallable('subscribeToTopic')({ token, topic: 'TODOS' });
+})
+// .then(x => console.log('Notification permission granted.'))
+.catch((err) => console.log('Unable to get permission to notify.', err));
+
 export const fb = {
   login: () => auth.signInWithPopup(provider),
   logout: () => auth.signOut(),
@@ -37,4 +48,5 @@ export const fb = {
   updateField: (id, field, value) => firebase.firestore().collection('todos').doc(id)
     .update({ [field]: value }).catch(e => e),
   auth,
+  messaging
 };

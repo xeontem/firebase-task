@@ -12,7 +12,8 @@ class App extends Component {
     super(props);
     this.state = {
       user: null,
-      todos: []
+      todos: [],
+      messages: []
     };
 
     // show authorized user onload
@@ -22,10 +23,16 @@ class App extends Component {
         : null
       }));
 
+    // load todos
     fb.getTodos(snap => {
       this.setState({
         todos: [...snap.docs].map(doc => ({ ...doc.data(), id: doc.id, progress: 0 }))
       });
+    });
+
+    // subscribe on FCM messages stream
+    this.msgSubscription = fb.messaging.onMessage(payload => {
+      this.setState({ messages: [...this.state.messages, payload.notification] });
     });
   }
 
@@ -35,7 +42,13 @@ class App extends Component {
     });
   }
 
-  getMessage() {}
+  getMessage() {
+    if (this.state.messages.length) {
+      const [head, ...tail] = this.state.messages; // eslint-disable-line
+      setTimeout(() => { this.setState({ messages: tail }) }, 4000);
+    }
+    return this.state.messages[0];
+  }
 
   toggleDone = todo => () => {
     fb.toggleTodo(todo).catch(e => e);

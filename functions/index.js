@@ -31,3 +31,34 @@ exports.backupTodos = functions.https.onCall((data, context) => {
       return `backuped ${backup.length} todos. Backup success!!`;
     }).catch(console.log);
 });
+
+
+//-------------------------- messaging -----------------------------------
+exports.subscribeToTopic = functions.https.onCall((data, context) => {
+  admin.messaging().subscribeToTopic(data.token, data.topic)
+    .then(function(response) {
+      console.log('Successfully subscribed to topic:', response);
+    })
+    .catch(function(error) {
+      console.log('Error subscribing to topic:', error);
+    });
+});
+
+exports.fsSendupdate = functions.firestore.document('/todos/{todoID}')
+.onUpdate(todo => {
+  const previousValue = todo.before.data();
+  const payload = {
+    notification: {
+      title: 'React App',
+      body: `todo ${previousValue.header} successfully updated!`,
+      icon: 'https://firebasestorage.googleapis.com/v0/b/circle-ci-test-31dfc.appspot.com/o/firestore.png?alt=media&token=a1227c5e-6cad-4dfb-81d6-ae07d7dbac1c'
+    }
+  };
+
+  console.log('-----------------------------------------');
+  console.log(`todo ${previousValue.header} successfully updated!`);
+  console.log('-----------------------------------------');
+
+  admin.messaging().sendToTopic('TODOS', payload);
+  return true;
+});
