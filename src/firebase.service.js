@@ -23,5 +23,18 @@ export const fb = {
   toggleTodo: ({ id, done}) => firebase.firestore().collection('todos')
     .doc(id).update({ done: !done }),
   backupTodos: () => func.httpsCallable('backupTodos')(),
+  uploadFile: (id, file) => {
+    const ref = firebase.storage().ref('todos/' + id + '/' + file.name);
+    const task = ref.put(file);
+    return task;
+  },
+  deleteFile: (id, file, attachments) => {
+    firebase.storage().ref('todos/' + id + '/' + file.name).delete()
+      .then(succ => {
+        firebase.firestore().collection('todos').doc(id).update({ attachments });
+      }).catch(e => e);
+  },
+  updateField: (id, field, value) => firebase.firestore().collection('todos').doc(id)
+    .update({ [field]: value }).catch(e => e),
   auth,
 };

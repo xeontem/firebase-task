@@ -24,7 +24,7 @@ class App extends Component {
 
     fb.getTodos(snap => {
       this.setState({
-        todos: [...snap.docs].map(doc => ({ id: doc.id, ...doc.data() }))
+        todos: [...snap.docs].map(doc => ({ ...doc.data(), id: doc.id, progress: 0 }))
       });
     });
   }
@@ -41,9 +41,39 @@ class App extends Component {
     fb.toggleTodo(todo).catch(e => e);
   }
 
-  uploadAttachment() {}
+  uploadAttachment = i => e => {
+    const file = e.target.files[0];
+    if (file) {
+      const task = fb.uploadFile(this.state.todos[i].id, file);
+      task.on('state_changed')({
+        'next': snapshot => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.setState({
+            todos: this.state.todos.map((todo, ind) => ind === i
+              ? ({ ...todo, progress })
+              : todo
+            )
+          });
+        },
+        'error': null,
+        'complete': null
+      });
 
-  deleteAttachment() {}
+      task.then(snapShot => snapShot.ref.getDownloadURL())
+        .then(url => fb.updateField(
+          this.state.todos[i].id,
+          'attachments',
+          [...this.state.todos[i].attachments, { url, name: file.name }]))
+        .catch(e => e);
+    }
+  }
+
+  deleteAttachment = (todoInd, attachInd) => e => {
+    const id = this.state.todos[todoInd].id;
+    const file = this.state.todos[todoInd].attachments[attachInd];
+    const newAttachments = this.state.todos[todoInd].attachments.filter((file, ind) => ind !== attachInd);
+    fb.deleteFile(id, file, newAttachments);
+  }
 
   login = () => {
     fb.login().then(({ user }) => {
