@@ -14,14 +14,22 @@ const provider = new firebase.auth.GoogleAuthProvider();
 provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 
 const auth = fire.auth();
+const todosStore = firebase.firestore().collection('todos');
 const func = firebase.functions();
 
 export const fb = {
   login: () => auth.signInWithPopup(provider),
   logout: () => auth.signOut(),
-  getTodos: cb => firebase.firestore().collection('todos').onSnapshot(cb),
-  toggleTodo: ({ id, done}) => firebase.firestore().collection('todos')
-    .doc(id).update({ done: !done }),
+  getTodos: cb => todosStore.onSnapshot(cb),
+  toggleTodo: ({ id, done}) => todosStore.doc(id).update({ done: !done }),
   backupTodos: () => func.httpsCallable('backupTodos')(),
+  uploadFile: (id, file) => {
+    const ref = firebase.storage().ref(`/todos/${id}/${file.name}`);
+    const task = ref.put(file);
+    return task;
+  },
+  deleteFile: (id, file, attachments) => firebase.storage().ref(`/todos/${id}/${file.name}`).delete()
+    .then(() => todosStore.doc(id).update({ attachments })),
+  updateField: (id, field, value) => todosStore.doc(id).update({ [field]: value }),
   auth,
 };
