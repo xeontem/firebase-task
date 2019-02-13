@@ -17,6 +17,14 @@ const auth = fire.auth();
 const todosStore = firebase.firestore().collection('todos');
 const func = firebase.functions();
 
+//messaging
+const msg = firebase.messaging();
+msg.usePublicVapidKey("BGsoQQo2r3rVMERHG2xS7P7-0Mermus_AMQrTdiZyxbl2gJR2-YehuU0e_9VMw9EL9tPIjuPx1ZCSd_SvPy2MuE");
+msg.requestPermission()
+  .then(() => msg.getToken())
+  .then(token => func.httpsCallable('subscribeToTopic')({ token, topic: 'TODOS' }))
+  .catch(console.log);
+
 export const fb = {
   login: () => auth.signInWithPopup(provider),
   logout: () => auth.signOut(),
@@ -32,4 +40,5 @@ export const fb = {
     .then(() => todosStore.doc(id).update({ attachments })),
   updateField: (id, field, value) => todosStore.doc(id).update({ [field]: value }),
   auth,
+  msg
 };
